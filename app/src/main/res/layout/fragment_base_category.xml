@@ -6,16 +6,20 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:overScrollMode="never"
-    android:id="@+id/scroll_cupboard">
+    android:id="@+id/nested_scroll_base_category"
+
+>
 
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="@dimen/_8sdp"
+        >
 
         <ProgressBar
-            android:id="@+id/progressbar2"
+            android:id="@+id/bestOfferProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminateTint="@color/g_icon_tint"
@@ -26,15 +30,16 @@
             app:layout_constraintTop_toBottomOf="@+id/rvBestProducts"/>
 
         <ProgressBar
-            android:id="@+id/progressbar1"
+            android:id="@+id/bestProductsProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminateTint="@color/g_icon_tint"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/rvOffer"
-            app:layout_constraintBottom_toBottomOf="@id/rvOffer"
+
             android:visibility="gone"
-            />
+            app:layout_constraintBottom_toBottomOf="@+id/rvOffer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/rvOffer"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvOffer"
@@ -44,50 +49,49 @@
             android:overScrollMode="never"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/guideline1"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/product_item"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toStartOf="@id/progressbar1"/>
+       />
 
         <TextView
             android:id="@+id/tv_best_products"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="@dimen/_16sdp"
             android:fontFamily="@font/poppins_thin"
             android:text="@string/g_best_products"
             android:textColor="@color/black"
             android:textSize="@dimen/_18ssp"
-            app:layout_constraintStart_toStartOf="@id/guideline1"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rvOffer" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvBestProducts"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:overScrollMode="never"
-            app:layout_constraintEnd_toEndOf="@id/guideline2"
-            app:layout_constraintStart_toStartOf="@id/guideline1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_best_products"
-            app:layout_constraintBottom_toTopOf="@id/progressbar2"/>
+            app:layout_constraintBottom_toTopOf="@id/bestOfferProgressBar"/>
 
 
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.04" />
+<!--        <androidx.constraintlayout.widget.Guideline-->
+<!--            android:id="@+id/guideline1"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintGuide_percent="0.04" />-->
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.96" />
+<!--        <androidx.constraintlayout.widget.Guideline-->
+<!--            android:id="@+id/guideline2"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintGuide_percent="0.96" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

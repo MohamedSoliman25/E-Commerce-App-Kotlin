@@ -137,11 +137,11 @@ class MainCategoryFragment :Fragment(R.layout.fragment_main_category){
 
     private fun showLoading(){
 
-        binding.progressbar2.visibility = View.VISIBLE
+        binding.bestOfferProgressBar.visibility = View.VISIBLE
     }
     private fun hideLoading(){
 
-        binding.progressbar2.visibility = View.GONE
+        binding.bestOfferProgressBar.visibility = View.GONE
 
     }
 }

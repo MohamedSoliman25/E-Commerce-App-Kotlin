@@ -26,7 +26,9 @@ class BestDealsRecyclerAdapter :
                     }
                     tvDealProductName.text = product.name
                     tvOldPrice.text = "$${product.price}"
-                    tvOldPrice.paintFlags = tvOldPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    if (product.offerPercentage!=null) {
+                        tvOldPrice.paintFlags = tvOldPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    }
                 }
 
                 binding.btnSeeProduct.setOnClickListener {

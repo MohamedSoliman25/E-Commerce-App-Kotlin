@@ -30,7 +30,9 @@ class BestProductAdapter(): RecyclerView.Adapter<BestProductAdapter.BestProductV
                     }
                     tvName.text = product.name
                     tvPrice.text = "$${product.price}"
-                    tvPrice.paintFlags = tvPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    if (product.offerPercentage!=null) {
+                        tvPrice.paintFlags = tvPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    }
                 }
             }
         }
