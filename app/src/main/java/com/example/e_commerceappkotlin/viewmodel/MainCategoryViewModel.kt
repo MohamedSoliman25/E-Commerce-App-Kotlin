@@ -1,5 +1,6 @@
 package com.example.e_commerceappkotlin.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.e_commerceappkotlin.data.Product
@@ -16,6 +17,7 @@ class MainCategoryViewModel @Inject constructor(
     private val firestore:FirebaseFirestore
 ):
     ViewModel() {
+    private  val TAG = "MainCategoryViewModel"
         private val _specialProducts = MutableStateFlow<Resource<List<Product>>>(Resource.Unspecified())
     val specialProducts:StateFlow<Resource<List<Product>>> = _specialProducts
 
@@ -47,6 +49,7 @@ class MainCategoryViewModel @Inject constructor(
             }
             .addOnFailureListener {
                 viewModelScope.launch {
+                    Log.d(TAG, "fetchSpecialProductsMo: "+it.message.toString())
                     _specialProducts.emit(Resource.Error(it.message.toString()))
                 }
             }

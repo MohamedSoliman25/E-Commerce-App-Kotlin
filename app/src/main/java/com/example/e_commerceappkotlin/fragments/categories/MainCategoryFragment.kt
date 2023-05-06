@@ -9,6 +9,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.e_commerceappkotlin.R
@@ -16,7 +17,9 @@ import com.example.e_commerceappkotlin.adapters.BestDealsRecyclerAdapter
 import com.example.e_commerceappkotlin.adapters.BestProductAdapter
 import com.example.e_commerceappkotlin.adapters.SpecialProductAdapter
 import com.example.e_commerceappkotlin.databinding.FragmentMainCategoryBinding
+import com.example.e_commerceappkotlin.util.Constants
 import com.example.e_commerceappkotlin.util.Resource
+import com.example.e_commerceappkotlin.util.showBottomNavigationView
 import com.example.e_commerceappkotlin.viewmodel.MainCategoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -44,6 +47,27 @@ class MainCategoryFragment :Fragment(R.layout.fragment_main_category){
         setUpSpecialProductRv()
         setUpBestDealsRv()
         setUpBestProductRv()
+
+        specialProductAdapter.onItemClick = {
+            val b = Bundle().apply {
+                putParcelable(Constants.PRODUCT,it)
+            }
+            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment,b)
+        }
+
+        bestDealsRecyclerAdapter.onItemClick = {
+            val b = Bundle().apply {
+                putParcelable(Constants.PRODUCT,it)
+            }
+            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment,b)
+        }
+
+        bestProductAdapter.onItemClick = {
+            val b = Bundle().apply {
+                putParcelable(Constants.PRODUCT,it)
+            }
+            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment,b)
+        }
         lifecycleScope.launchWhenStarted {
             viewModel.specialProducts.collectLatest {
                 when (it){
@@ -143,5 +167,10 @@ class MainCategoryFragment :Fragment(R.layout.fragment_main_category){
 
         binding.bestOfferProgressBar.visibility = View.GONE
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showBottomNavigationView()
     }
 }

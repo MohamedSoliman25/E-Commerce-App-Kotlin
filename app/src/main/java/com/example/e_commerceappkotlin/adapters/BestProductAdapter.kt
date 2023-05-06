@@ -65,9 +65,9 @@ class BestProductAdapter(): RecyclerView.Adapter<BestProductAdapter.BestProductV
 
         holder.bind(product)
 
-//        holder.binding.btnSeeProduct.setOnClickListener {
-//            onItemClick?.invoke(product)
-//        }
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(product)
+        }
 
     }
 
