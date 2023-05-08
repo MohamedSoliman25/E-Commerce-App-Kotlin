@@ -2,6 +2,7 @@ package com.example.e_commerceappkotlin.adapters
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,14 +68,14 @@ class ColorsAdapter() :RecyclerView.Adapter<ColorsAdapter.ColorsViewHolder>() {
 
         val color = differ.currentList[position]
         holder.bind(color,position)
-
         holder.itemView.setOnClickListener{
-            if (selectedPosition>=0){
-                notifyItemChanged(selectedPosition)
-                selectedPosition = holder.adapterPosition
-                notifyItemChanged(selectedPosition)
-                onItemClick?.invoke(color)
-            }
+            val previousSelectedItem = selectedPosition
+            selectedPosition = holder.adapterPosition
+
+            // Notify the adapter of item changes
+            notifyItemChanged(previousSelectedItem)
+            notifyItemChanged(selectedPosition)
+            onItemClick?.invoke(color)
         }
     }
 

@@ -2,10 +2,14 @@ package com.example.e_commerceappkotlin.fragments.shopping
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.e_commerceappkotlin.R
@@ -13,13 +17,17 @@ import com.example.e_commerceappkotlin.SpacingDecorator.HorizantalSpacingItemDec
 import com.example.e_commerceappkotlin.adapters.ColorsAdapter
 import com.example.e_commerceappkotlin.adapters.SizesAdapter
 import com.example.e_commerceappkotlin.adapters.ViewPager2Images
+import com.example.e_commerceappkotlin.data.CartProduct
 import com.example.e_commerceappkotlin.data.Product
 import com.example.e_commerceappkotlin.databinding.FragmentProductDetailsBinding
-import com.example.e_commerceappkotlin.util.Constants.COLORS_TYPE
-import com.example.e_commerceappkotlin.util.Constants.SIZES_TYPE
+import com.example.e_commerceappkotlin.util.Resource
+import com.example.e_commerceappkotlin.viewmodel.DetailsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import io.github.vejei.viewpagerindicator.indicator.CircleIndicator
+import kotlinx.coroutines.flow.collectLatest
 
+@AndroidEntryPoint
 class ProductDetailsFragment :Fragment() {
 
     val args by navArgs<ProductDetailsFragmentArgs>()
@@ -27,9 +35,12 @@ class ProductDetailsFragment :Fragment() {
 
     private lateinit var binding: FragmentProductDetailsBinding
     private val colorsAdapter by lazy { ColorsAdapter() }
-    private val sizesAdapter by lazy { SizesAdapter() }
+    private val sizesAdapter by lazy { SizesAdapter(this@ProductDetailsFragment) }
     private  val viewPagerAdapter by lazy { ViewPager2Images() }
-//    private lateinit var viewModel: ShoppingViewModel
+    private var selectedColor: Int? = null
+    private var selectedSize: String? = null
+    private val viewModel by viewModels<DetailsViewModel>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,55 +74,65 @@ class ProductDetailsFragment :Fragment() {
         setProductInformation(product)
 
         onImageCloseClick()
-//        onBtnAddToCartClick()
-
-//        observeAddToCart()
 
         onColorClick()
         onSizeClick()
+        onBtnAddToCartClick(product)
+
+        observeAddToCart()
+
+
     }
 
-    private var selectedSize: String = ""
     private fun onSizeClick() {
         sizesAdapter.onItemClick = { size ->
+            Log.d(TAG, "onSizeClickMo: "+size)
+
             selectedSize = size
             binding.tvSizeError.visibility = View.INVISIBLE
 
         }
     }
 
-    private var selectedColor: Int = 0
     private fun onColorClick() {
         colorsAdapter.onItemClick = { color ->
+            Log.d(TAG, "onColorClickMo: "+color)
             selectedColor = color
             binding.tvColorError.visibility = View.INVISIBLE
         }
     }
 
 
-//    private fun observeAddToCart() {
-//        viewModel.addToCart.observe(viewLifecycleOwner, Observer { response ->
-//            val btn = binding.btnAddToCart
-//            when (response) {
-//                is Resource.Loading -> {
-//                    startLoading()
-//                    return@Observer
-//                }
-//
-//                is Resource.Success -> {
-//                    stopLoading()
-//                    viewModel.addToCart.value = null
-//                    return@Observer
-//                }
-//
-//                is Resource.Error -> {
-//                    Toast.makeText(activity, "Oops! error occurred", Toast.LENGTH_SHORT).show()
-//                    viewModel.addToCart.value = null
-//                    Log.e(TAG, response.message.toString())
-//                }
-//            }
-//        })
-//    }
+    private fun observeAddToCart() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.addToCart.collectLatest {response->
+                when (response) {
+                    is Resource.Loading -> {
+//                        startLoading()
+                        binding.btnAddToCart.startAnimation()
+                    }
+
+                    is Resource.Success -> {
+//                        stopLoading()
+                        binding.btnAddToCart.revertAnimation()
+                        Toast.makeText(activity, "Product added successfully to cart", Toast.LENGTH_SHORT).show()
+
+//                        binding.btnAddToCart.setBackgroundColor(resources.getColor(R.color.black))
+
+                    }
+
+                    is Resource.Error -> {
+                        binding.btnAddToCart.stopAnimation()
+                        Toast.makeText(activity, "Oops! error occurred", Toast.LENGTH_SHORT).show()
+                        Log.e(TAG, response.message.toString())
+                    }
+                    else->Unit
+                }
+            }
+        }
+
+
+    }
 
     private fun stopLoading() {
         binding.apply {
@@ -128,38 +149,24 @@ class ProductDetailsFragment :Fragment() {
     }
 
 
-//    private fun onBtnAddToCartClick() {
-//        binding.btnAddToCart.apply {
-//            setOnClickListener {
-//
-//                if (selectedColor.isEmpty()) {
+    private fun onBtnAddToCartClick(product:Product) {
+        binding.btnAddToCart.apply {
+            setOnClickListener {
+
+//                if (selectedColor.toString().isEmpty()) {
 //                    binding.tvColorError.visibility = View.VISIBLE
 //                    return@setOnClickListener
 //                }
 //
-//                if (selectedSize.isEmpty()) {
+//                if (selectedSize!!.isEmpty()) {
 //                    binding.tvSizeError.visibility = View.VISIBLE
 //                    return@setOnClickListener
 //                }
-//
-//                val product = args.product
-//                val image = (product.images?.get(IMAGES) as List<String>)[0]
-//                val cartProduct = CartProduct(
-//                    product.id,
-//                    product.title!!,
-//                    product.seller!!,
-//                    image,
-//                    product.price!!,
-//                    product.newPrice,
-//                    1,
-//                    selectedColor,
-//                    selectedSize
-//                )
-//                viewModel.addProductToCart(cartProduct)
+                viewModel.addUpdateProductInCart(CartProduct(product,1,selectedColor,selectedSize))
 //                setBackgroundResource(R.color.g_black)
-//            }
-//        }
-//    }
+            }
+        }
+    }
 
     private fun onImageCloseClick() {
         binding.imgClose.setOnClickListener {

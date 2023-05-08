@@ -3,13 +3,15 @@ package com.example.e_commerceappkotlin.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.e_commerceappkotlin.databinding.ColorRvItemBinding
+import com.example.e_commerceappkotlin.R
 import com.example.e_commerceappkotlin.databinding.SizeRvItemBinding
+import com.example.e_commerceappkotlin.fragments.shopping.ProductDetailsFragment
 
-class SizesAdapter() :RecyclerView.Adapter<SizesAdapter.SizesViewHolder>(){
+class SizesAdapter(val context: ProductDetailsFragment) :RecyclerView.Adapter<SizesAdapter.SizesViewHolder>(){
 
     private var selectedPosition = -1
 
@@ -63,12 +65,19 @@ class SizesAdapter() :RecyclerView.Adapter<SizesAdapter.SizesViewHolder>(){
         holder.bind(size,position)
 
         holder.itemView.setOnClickListener{
-            if (selectedPosition>=0){
-                notifyItemChanged(selectedPosition)
-                selectedPosition = holder.adapterPosition
-                notifyItemChanged(selectedPosition)
-                onItemClick?.invoke(size)
-            }
+            val previousSelectedItem = selectedPosition
+            selectedPosition = holder.adapterPosition
+
+            // Notify the adapter of item changes
+            notifyItemChanged(previousSelectedItem)
+            notifyItemChanged(selectedPosition)
+            onItemClick?.invoke(size)
+//            if (selectedPosition>=0){
+//                notifyItemChanged(selectedPosition)
+//                selectedPosition = holder.adapterPosition
+//                notifyItemChanged(selectedPosition)
+//                onItemClick?.invoke(size)
+//            }
         }
     }
 
